@@ -63,18 +63,26 @@ public class XMLStatementBuilder extends BaseBuilder {
       return;
     }
 
+    // 获得节点名称
     String nodeName = context.getNode().getNodeName();
+    // 根据NodeName获得sqlCommonType枚举
     SqlCommandType sqlCommandType = SqlCommandType.valueOf(nodeName.toUpperCase(Locale.ENGLISH));
+    // 判断是否是select语句
     boolean isSelect = sqlCommandType == SqlCommandType.SELECT;
+    // 如果不是select语句，那么做对应的增删改的操作的时候会刷新缓存
     boolean flushCache = context.getBooleanAttribute("flushCache", !isSelect);
+    // 或是userCache属性
+    // 默认值isSelect为true，增删改为false
     boolean useCache = context.getBooleanAttribute("useCache", isSelect);
+
     boolean resultOrdered = context.getBooleanAttribute("resultOrdered", false);
 
     // Include Fragments before parsing
     XMLIncludeTransformer includeParser = new XMLIncludeTransformer(configuration, builderAssistant);
     includeParser.applyIncludes(context.getNode());
-
+    // 解析sql上节点的参数类型
     String parameterType = context.getStringAttribute("parameterType");
+    // 把参数类型设置为class
     Class<?> parameterTypeClass = resolveClass(parameterType);
 
     String lang = context.getStringAttribute("lang");
@@ -94,7 +102,7 @@ public class XMLStatementBuilder extends BaseBuilder {
           configuration.isUseGeneratedKeys() && SqlCommandType.INSERT.equals(sqlCommandType))
               ? Jdbc3KeyGenerator.INSTANCE : NoKeyGenerator.INSTANCE;
     }
-
+    // 解析sql
     SqlSource sqlSource = langDriver.createSqlSource(configuration, context, parameterTypeClass);
     StatementType statementType = StatementType
         .valueOf(context.getStringAttribute("statementType", StatementType.PREPARED.toString()));

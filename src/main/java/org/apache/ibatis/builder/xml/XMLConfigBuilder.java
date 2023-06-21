@@ -103,31 +103,48 @@ public class XMLConfigBuilder extends BaseBuilder {
   }
 
   public Configuration parse() {
+    // 若 已经解析过了抛出异常，
     if (parsed) {
       throw new BuilderException("Each XMLConfigBuilder can only be used once.");
     }
     parsed = true;
+    // 继续mybatis-config.xml的节点
     parseConfiguration(parser.evalNode("/configuration"));
     return configuration;
   }
 
+  /**
+   * 解析xml中的configuration节点
+   * root就是跟节点对象
+   * @param root
+   */
   private void parseConfiguration(XNode root) {
     try {
+      // 解析properties节点
       // issue #117 read properties first
       propertiesElement(root.evalNode("properties"));
+      // 解析settings配置文件
       Properties settings = settingsAsProperties(root.evalNode("settings"));
       loadCustomVfs(settings);
+      // 加载日志实现
       loadCustomLogImpl(settings);
+      // 解析别名
       typeAliasesElement(root.evalNode("typeAliases"));
+      // 解析插件，放入链路中去
       pluginElement(root.evalNode("plugins"));
       objectFactoryElement(root.evalNode("objectFactory"));
       objectWrapperFactoryElement(root.evalNode("objectWrapperFactory"));
       reflectorFactoryElement(root.evalNode("reflectorFactory"));
+
+
       settingsElement(settings);
       // read it after objectFactory and objectWrapperFactory issue #631
       environmentsElement(root.evalNode("environments"));
       databaseIdProviderElement(root.evalNode("databaseIdProvider"));
+
+      //类型处理器
       typeHandlerElement(root.evalNode("typeHandlers"));
+      //解析mapper层
       mapperElement(root.evalNode("mappers"));
     } catch (Exception e) {
       throw new BuilderException("Error parsing SQL Mapper Configuration. Cause: " + e, e);

@@ -95,10 +95,13 @@ public class CacheBuilder {
     setCacheProperties(cache);
     // issue #352, do not apply decorators to custom caches
     if (PerpetualCache.class.equals(cache.getClass())) {
+      // 只有一个cache 就是LurCache
       for (Class<? extends Cache> decorator : decorators) {
+        // 开始进行包装， 将最基础的PerpetualCache包装到LurCache中
         cache = newCacheDecoratorInstance(decorator, cache);
         setCacheProperties(cache);
       }
+      // 设置别的包装，例如LoggingCache、SynchronizedCache等
       cache = setStandardDecorators(cache);
     } else if (!LoggingCache.class.isAssignableFrom(cache.getClass())) {
       cache = new LoggingCache(cache);
@@ -199,8 +202,10 @@ public class CacheBuilder {
   }
 
   private Cache newCacheDecoratorInstance(Class<? extends Cache> cacheClass, Cache base) {
+    // 得到构造器 public LruCache
     Constructor<? extends Cache> cacheConstructor = getCacheDecoratorConstructor(cacheClass);
     try {
+      // 通过构造器反射得到实例 （base为PerpetualCache）
       return cacheConstructor.newInstance(base);
     } catch (Exception e) {
       throw new CacheException("Could not instantiate cache decorator (" + cacheClass + "). Cause: " + e, e);

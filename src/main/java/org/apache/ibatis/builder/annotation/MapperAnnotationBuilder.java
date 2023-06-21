@@ -114,9 +114,12 @@ public class MapperAnnotationBuilder {
 
   public void parse() {
     String resource = type.toString();
+    // 是否已经解析mapper接口对应的xml
     if (!configuration.isResourceLoaded(resource)) {
+      // 更具mapper接口名获取xml文件并解析
       loadXmlResource();
       configuration.addLoadedResource(resource);
+      // 添加已经解析的标识
       assistant.setCurrentNamespace(type.getName());
       parseCache();
       parseCacheRef();
