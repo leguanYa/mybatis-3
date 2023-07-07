@@ -40,7 +40,7 @@ public class SqlSourceBuilder extends BaseBuilder {
     super(configuration);
   }
 
-  public SqlSource parse(String originalSql, Class<?> parameterType, Map<String, Object> additionalParameters) {
+  public SqlSource  parse(String originalSql, Class<?> parameterType, Map<String, Object> additionalParameters) {
     ParameterMappingTokenHandler handler = new ParameterMappingTokenHandler(configuration, parameterType,
         additionalParameters);
     GenericTokenParser parser = new GenericTokenParser("#{", "}", handler);

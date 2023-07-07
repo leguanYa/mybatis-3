@@ -91,10 +91,17 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
       boolean autoCommit) {
     Transaction tx = null;
     try {
+      // 获取环境变量
       final Environment environment = configuration.getEnvironment();
+      // 获取事务工厂
       final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
       tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit);
+
+      // 创建执行器
+      // 一般情况下，若mybatis的全局配置文件的cacheEnable默认为true就返回
+      // 一个cacheExecutor，若关闭的话返回就是一个SimpleExecutor
       final Executor executor = configuration.newExecutor(tx, execType);
+      // 创建返回一个DefaultSqlSession对象返回
       return new DefaultSqlSession(configuration, executor, autoCommit);
     } catch (Exception e) {
       closeTransaction(tx); // may have fetched a connection so lets call close()

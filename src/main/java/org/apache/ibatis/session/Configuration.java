@@ -723,6 +723,7 @@ public class Configuration {
   public Executor newExecutor(Transaction transaction, ExecutorType executorType) {
     executorType = executorType == null ? defaultExecutorType : executorType;
     Executor executor;
+    // 判断执行器的类型
     if (ExecutorType.BATCH == executorType) {
       executor = new BatchExecutor(this, transaction);
     } else if (ExecutorType.REUSE == executorType) {
@@ -730,9 +731,12 @@ public class Configuration {
     } else {
       executor = new SimpleExecutor(this, transaction);
     }
+    // 判断是否开启了缓存
     if (cacheEnabled) {
+      // 把当前的简单执行器包装成一个CachingExecutor
       executor = new CachingExecutor(executor);
     }
+    // 插件：责任链+装饰器模式（动态代理）
     return (Executor) interceptorChain.pluginAll(executor);
   }
 

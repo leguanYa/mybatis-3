@@ -41,7 +41,8 @@ import java.lang.annotation.Target;
  *
  * Mapper XML:
  *
- * <pre>{@code
+ * <pre>
+ * {@code
  * <mapper namespace="com.example.mapper.UserMapper">
  *   <resultMap id="userMap" type="com.example.model.User">
  *     <id property="id" column="id" />

@@ -114,8 +114,8 @@ public class XMLConfigBuilder extends BaseBuilder {
   }
 
   /**
-   * 解析xml中的configuration节点
-   * root就是跟节点对象
+   * 解析xml中的configuration节点 root就是跟节点对象
+   *
    * @param root
    */
   private void parseConfiguration(XNode root) {
@@ -136,15 +136,14 @@ public class XMLConfigBuilder extends BaseBuilder {
       objectWrapperFactoryElement(root.evalNode("objectWrapperFactory"));
       reflectorFactoryElement(root.evalNode("reflectorFactory"));
 
-
       settingsElement(settings);
       // read it after objectFactory and objectWrapperFactory issue #631
       environmentsElement(root.evalNode("environments"));
       databaseIdProviderElement(root.evalNode("databaseIdProvider"));
 
-      //类型处理器
+      // 类型处理器
       typeHandlerElement(root.evalNode("typeHandlers"));
-      //解析mapper层
+      // 解析mapper层
       mapperElement(root.evalNode("mappers"));
     } catch (Exception e) {
       throw new BuilderException("Error parsing SQL Mapper Configuration. Cause: " + e, e);
